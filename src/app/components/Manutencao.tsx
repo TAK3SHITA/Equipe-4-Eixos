@@ -171,7 +171,15 @@ export function Manutencao() {
       const veiculos = veicRes.data ?? [], perfis = perfisRes.data ?? [], pecas = pecasRes.data ?? [];
       const servicos = servRes.data ?? [], pecasOS = osPecasRes.data ?? [];
       setVeiculosBanco(veiculos);
-      setMecanicosBanco(perfis.filter((p: any) => ["Mecânico", "Mecanico", "Administrador", "Gerente"].includes(p.perfil)));
+      const somenteMecanicos = perfis
+        .filter((p: any) => String(p.perfil ?? "").trim().toLocaleLowerCase("pt-BR") === "mecânico")
+        .sort((a: any, b: any) =>
+          String(a.nome ?? "").localeCompare(String(b.nome ?? ""), "pt-BR", {
+            numeric: true,
+            sensitivity: "base",
+          })
+        );
+      setMecanicosBanco(somenteMecanicos);
       setPecasBanco(pecas);
       setOrdens((osRes.data ?? []).map((row: any) => {
         const v = veiculos.find((x: any) => x.id === row.veiculo_id);
